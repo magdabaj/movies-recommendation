@@ -1,14 +1,15 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query, UsePipes, ValidationPipe} from '@nestjs/common';
 import {MoviesService} from "./movies.service";
 import {CreateMovieDto} from "./dto/create-movie.dto";
 import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
+import {MovieRatingValidationPipe} from "./pipes/movie-rating-validation.pipe";
 
 @Controller('movies')
 export class MoviesController {
     constructor(private moviesService: MoviesService) {}
 
     @Get()
-    getMovies(@Query() filterDto: GetMoviesFilterDto): MovieModel[] {
+    getMovies(@Query(ValidationPipe) filterDto: GetMoviesFilterDto): MovieModel[] {
         if (Object.keys(filterDto).length)
             return this.moviesService.getMoviesWithFilters(filterDto)
          else return this.moviesService.getAllMovies();
@@ -20,6 +21,7 @@ export class MoviesController {
     }
 
     @Post()
+    @UsePipes(ValidationPipe)
     createMovie(@Body() createMovieDto: CreateMovieDto): MovieModel {
         return this.moviesService.createMovie(createMovieDto)
     }
@@ -32,7 +34,7 @@ export class MoviesController {
     @Patch(`/:id`)
     addRating(
         @Param('id') id: string,
-        @Body('rating') rating: object
+        @Body('rating', MovieRatingValidationPipe) rating: object
     ): MovieModel {
         return this.moviesService.addRating(id,rating)
     }

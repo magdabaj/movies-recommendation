@@ -1,4 +1,4 @@
-import {Get, Injectable} from '@nestjs/common';
+import {Get, Injectable, NotFoundException} from '@nestjs/common';
 import * as uuid from 'uuid';
 import {CreateMovieDto} from "./dto/create-movie.dto";
 import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
@@ -31,7 +31,13 @@ export class MoviesService {
     }
 
     getMovieById(id: string): MovieModel {
-        return this.movies.find(m => m.id === id);
+        const found =  this.movies.find(m => m.id === id);
+
+        if (!found) {
+            throw new NotFoundException()
+        }
+
+        return found
     }
 
     createMovie(createMovieDto: CreateMovieDto): MovieModel {
@@ -49,7 +55,8 @@ export class MoviesService {
     }
 
     deleteMovie(id: string): void {
-        this.movies = this.movies.filter(m => m.id !== id)
+        const found = this.getMovieById(id)
+        this.movies = this.movies.filter(m => m.id !== found.id)
     }
 
     addRating(id: string, rating: {}): MovieModel {
