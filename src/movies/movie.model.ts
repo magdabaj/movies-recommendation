@@ -2,6 +2,6 @@ interface MovieModel {
     id: string;
     title: string;
     description: string;
-    releaseDate: string;
+    releaseDate: Date;
     ratings: [];
 }
