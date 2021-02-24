@@ -1,4 +1,6 @@
 import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Rating} from "../ratings/rating.entity";
+import {Genre} from "../genre/genre.entity";
 
 @Entity()
 export class Movie extends BaseEntity {
@@ -11,9 +13,12 @@ export class Movie extends BaseEntity {
     @Column()
     description: string;
 
-    @Column()
+    @Column("timestamp")
     releaseDate: Date;
 
-    @OneToMany(type => RatingEntity, rating => rating.movie, {eager: true})
-    ratings: RatingEntity[]
+    @OneToMany(type => Genre, genre => genre.movie, { eager: true })
+    genres: Genre[]
+
+    @OneToMany(type => Rating, rating => rating.movie, {eager: true})
+    ratings: Rating[]
 }

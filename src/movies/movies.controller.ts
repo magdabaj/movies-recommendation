@@ -35,7 +35,7 @@ export class MoviesController {
     addRating(
         @Param('id') id: string,
         @Body('rating', MovieRatingValidationPipe) rating: object
-    ): MovieModel {
+    ): Movie {
         return this.moviesService.addRating(id,rating)
     }
 
