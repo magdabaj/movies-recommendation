@@ -1,4 +1,4 @@
-import {IsDate, IsNotEmpty, IsOptional} from "class-validator";
+import {IsNotEmpty, IsOptional} from "class-validator";
 
 export class GetMoviesFilterDto {
     @IsOptional()
@@ -6,6 +6,6 @@ export class GetMoviesFilterDto {
     search: string;
 
     @IsOptional()
-    @IsDate()
-    date: Date;
+    @IsNotEmpty()
+    date: string;
 }

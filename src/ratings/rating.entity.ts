@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {MovieRatingEnum} from "./movie-rating.enum";
 import {Movie} from "../movies/movie.entity";
 import {User} from "../user/user.entity";
@@ -10,11 +10,13 @@ export class Rating extends BaseEntity
     id: number;
 
     @Column("decimal")
-    rating: MovieRatingEnum;
+    value: MovieRatingEnum;
 
-    @ManyToOne(type => User, user => user.ratings, { eager: false })
+    @ManyToOne(type => User, user => user.ratings, { primary: true })
+    @JoinColumn({ name: "user_id" })
     user: User
 
-    @ManyToOne(type => Movie, movie => movie.ratings)
+    @ManyToOne(type => Movie, movie => movie.ratings, { primary: true })
+    @JoinColumn({ name: 'movie_id'})
     movie: Movie
 }

@@ -1,4 +1,4 @@
-import {IsDate, IsNotEmpty, IsOptional} from "class-validator";
+import {IsNotEmpty, IsOptional} from "class-validator";
 
 export class CreateMovieDto {
     @IsNotEmpty()
@@ -8,6 +8,5 @@ export class CreateMovieDto {
     description: string;
 
     @IsNotEmpty()
-    @IsDate()
-    releaseDate: Date;
+    releaseDate: string;
 }

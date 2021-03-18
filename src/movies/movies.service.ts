@@ -3,16 +3,47 @@ import {CreateMovieDto} from "./dto/create-movie.dto";
 import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {MovieRepository} from "./movie.repository";
+import {Movie} from "./movie.entity";
 
 @Injectable()
 export class MoviesService {
     constructor(
         @InjectRepository(MovieRepository)
         private movieRepository: MovieRepository
-    ) {
+    ) {}
+
+    async getMovies(filterDto: GetMoviesFilterDto): Promise<Movie[]> {
+        return this.movieRepository.getMovies(filterDto)
     }
-    // private movies: MovieModel[] = [];
-    //
+    async getMovieById(id: number): Promise<Movie> {
+        const found = await this.movieRepository.findOne(id);
+
+        if (!found) {
+            throw new NotFoundException(`Movie with ID "${id}" not found`)
+        }
+
+        return found
+    }
+
+    async createMovie(createMovieDto: CreateMovieDto): Promise<Movie> {
+        return this.movieRepository.createMovie(createMovieDto)
+    }
+
+    async deleteMovie(id: number): Promise<void> {
+        const result = await this.movieRepository.delete(id)
+
+        if (result.affected === 0) {
+            throw new NotFoundException(`Movie with ID "${id}" not found`)
+        }
+    }
+
+    // addRating(id: string, rating: {}): MovieModel {
+    //     const movie: MovieModel = this.getMovieById(id)
+    //     // @ts-ignore
+    //     movie.ratings.push(rating)
+    //     return movie
+    // }
+
     // getAllMovies(): MovieModel[] {
     //     return this.movies;
     // }
@@ -36,39 +67,4 @@ export class MoviesService {
     //     return movies
     // }
     //
-    // getMovieById(id: string): MovieModel {
-    //     const found =  this.movies.find(m => m.id === id);
-    //
-    //     if (!found) {
-    //         throw new NotFoundException()
-    //     }
-    //
-    //     return found
-    // }
-    //
-    // createMovie(createMovieDto: CreateMovieDto): MovieModel {
-    //     const { title, description, releaseDate } = createMovieDto;
-    //     const movie: MovieModel = {
-    //         id: uuid(),
-    //         title,
-    //         description,
-    //         releaseDate,
-    //         ratings: [],
-    //     }
-    //
-    //     this.movies.push(movie);
-    //     return movie;
-    // }
-    //
-    // deleteMovie(id: string): void {
-    //     const found = this.getMovieById(id)
-    //     this.movies = this.movies.filter(m => m.id !== found.id)
-    // }
-    //
-    // addRating(id: string, rating: {}): MovieModel {
-    //     const movie: MovieModel = this.getMovieById(id)
-    //     // @ts-ignore
-    //     movie.ratings.push(rating)
-    //     return movie
-    // }
 }
