@@ -4,9 +4,12 @@ export class CreateMovieDto {
     @IsNotEmpty()
     title: string;
 
-    @IsOptional()
-    description: string;
-
     @IsNotEmpty()
-    releaseDate: string;
+    genres: string
+
+    // @IsOptional()
+    // description: string;
+    //
+    // @IsNotEmpty()
+    // releaseDate: string;
 }

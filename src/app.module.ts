@@ -4,7 +4,6 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {typeOrmConfig} from "./config/typeorm.config";
 import { RatingsModule } from './ratings/ratings.module';
 import { UserModule } from './user/user.module';
-import { GenreModule } from './genre/genre.module';
 
 @Module({
   imports: [
@@ -12,7 +11,6 @@ import { GenreModule } from './genre/genre.module';
       MoviesModule,
       RatingsModule,
       UserModule,
-      GenreModule,
   ],
   controllers: [],
   providers: [],

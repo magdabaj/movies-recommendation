@@ -1,7 +1,7 @@
 import {BadRequestException, PipeTransform} from "@nestjs/common";
 
-export class MovieRatingValidationPipe implements PipeTransform {
-    readonly allowedValues = [1,2,3,4,5]
+export class RatingValidationPipe implements PipeTransform {
+    readonly allowedValues = [1, 2, 3, 4, 5]
 
     transform(value: any /* metadata: ArgumentMetadata*/): any {
         // metadata is an optional argument

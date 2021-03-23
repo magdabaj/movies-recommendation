@@ -1,7 +1,6 @@
 import {IsNotEmpty, IsNumber} from "class-validator";
 import {MovieRatingEnum} from "../movie-rating.enum";
-import {User} from "../../user/user.entity";
-import {Movie} from "../../movies/movie.entity";
+import {Timestamp} from "typeorm";
 
 export class CreateRatingDto {
     @IsNotEmpty()
@@ -9,8 +8,5 @@ export class CreateRatingDto {
     value: MovieRatingEnum;
 
     @IsNotEmpty()
-    user: User;
-
-    @IsNotEmpty()
-    movie: Movie;
+    createdAt: Timestamp;
 }

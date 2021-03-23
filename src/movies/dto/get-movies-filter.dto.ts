@@ -4,8 +4,8 @@ export class GetMoviesFilterDto {
     @IsOptional()
     @IsNotEmpty()
     search: string;
-
-    @IsOptional()
-    @IsNotEmpty()
-    date: string;
+    //
+    // @IsOptional()
+    // @IsNotEmpty()
+    // date: string;
 }

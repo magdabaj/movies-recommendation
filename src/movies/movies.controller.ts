@@ -5,21 +5,17 @@ import {
     Get,
     Param,
     ParseIntPipe,
-    Patch,
     Post,
-    Query, UseGuards,
+    Query,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
 import {MoviesService} from "./movies.service";
 import {CreateMovieDto} from "./dto/create-movie.dto";
 import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
-import {MovieRatingValidationPipe} from "./pipes/movie-rating-validation.pipe";
 import {Movie} from "./movie.entity";
-import {AuthGuard} from "@nestjs/passport";
 
 @Controller('movies')
-@UseGuards(AuthGuard())
 export class MoviesController {
     constructor(private moviesService: MoviesService) {}
 
@@ -35,8 +31,8 @@ export class MoviesController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    createMovie(@Body() createMovieDto: CreateMovieDto): Promise<Movie> {
-        return this.moviesService.createMovie(createMovieDto)
+    createMovie(): Promise<void> {
+        return this.moviesService.createMovie();
     }
 
     @Delete('/:id')

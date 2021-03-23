@@ -4,6 +4,7 @@ import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {MovieRepository} from "./movie.repository";
 import {Movie} from "./movie.entity";
+import {User} from "../user/user.entity";
 
 @Injectable()
 export class MoviesService {
@@ -25,8 +26,8 @@ export class MoviesService {
         return found
     }
 
-    async createMovie(createMovieDto: CreateMovieDto): Promise<Movie> {
-        return this.movieRepository.createMovie(createMovieDto)
+    async createMovie(): Promise<void> {
+        await this.movieRepository.insertMovies()
     }
 
     async deleteMovie(id: number): Promise<void> {
