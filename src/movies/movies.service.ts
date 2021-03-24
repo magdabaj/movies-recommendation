@@ -5,12 +5,15 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {MovieRepository} from "./movie.repository";
 import {Movie} from "./movie.entity";
 import {User} from "../user/user.entity";
+import {CsvParser, ParsedData} from "nest-csv-parser";
+import * as fs from "fs";
 
 @Injectable()
 export class MoviesService {
     constructor(
         @InjectRepository(MovieRepository)
-        private movieRepository: MovieRepository
+        private movieRepository: MovieRepository,
+        private readonly csvParser: CsvParser
     ) {}
 
     async getMovies(filterDto: GetMoviesFilterDto): Promise<Movie[]> {
@@ -27,7 +30,9 @@ export class MoviesService {
     }
 
     async createMovie(): Promise<void> {
-        await this.movieRepository.insertMovies()
+        const stream = fs.createReadStream('./src/movies/data/movies.csv')
+        const movies = await this.csvParser.parse(stream, Movie, null,null,{ strict: true, separator: ',' })
+        await this.movieRepository.insertMovies(movies)
     }
 
     async deleteMovie(id: number): Promise<void> {

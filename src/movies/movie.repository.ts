@@ -48,17 +48,10 @@ export class MovieRepository extends Repository<Movie> {
         return movie
     }
 
-    async insertMovies(): Promise<void> {
-        let movies = []
-        fs.createReadStream('./data/movies.csv')
-            .pipe(csv())
-            .on('data', (data) => {
-                movies.push(data);
-            })
-            .on('end', () => {
-                console.log(movies);
-                movies.forEach(movie => this.createMovie(movie.title, movie.genres))
-            });
+    async insertMovies(movies): Promise<void> {
+        movies.list.forEach(movie =>
+            this.createMovie(movie.title, movie.genres)
+        )
     }
 
 }

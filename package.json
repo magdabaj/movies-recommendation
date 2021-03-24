@@ -29,7 +29,7 @@
     "@nestjs/typeorm": "^7.1.5",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
-    "csv-parser": "^3.0.0",
+    "nest-csv-parser": "^2.0.4",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.5.1",
