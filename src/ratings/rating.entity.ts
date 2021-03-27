@@ -1,28 +1,27 @@
-import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp, Unique} from "typeorm";
-import {MovieRatingEnum} from "./movie-rating.enum";
+import {BaseEntity, Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, Timestamp, Unique} from "typeorm";
 import {Movie} from "../movies/movie.entity";
 import {User} from "../user/user.entity";
 
 @Entity()
-@Unique(["user", "movieId"])
+// @Unique(["user", "movieId"])
 export class Rating extends BaseEntity
 {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column("decimal")
-    value: MovieRatingEnum;
+    @Column({type: "float", nullable: false})
+    value: number;
 
-    @Column("timestamp")
-    createdAt: Timestamp
+    @Column()
+    timestamp: string
 
-    @Column("number")
+    @PrimaryColumn()
     userId: number;
 
     @ManyToOne(type => User, user => user.ratings, { eager: false })
     user: User
 
-    @Column("number")
+    @PrimaryColumn()
     movieId: number
 
     @ManyToOne(type => Movie, movie => movie.ratings, { eager: false })

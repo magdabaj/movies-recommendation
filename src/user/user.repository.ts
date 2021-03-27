@@ -4,6 +4,8 @@ import {EntityRepository, Repository} from "typeorm";
 import {UserCredentialsDto} from "./dto/user-credentials.dto";
 import {ConflictException, InternalServerErrorException} from "@nestjs/common";
 import {SigninCredentialsDto} from "./dto/signin-credentials.dto";
+import {generateRandomString} from "../utils/generateRandomString";
+import {getUniqueUsers} from "../utils/getUniqueValues";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -17,7 +19,6 @@ export class UserRepository extends Repository<User> {
         user.salt = await bcrypt.genSalt();
         user.password = await UserRepository.hashPassword(password, user.salt);
         user.createDate = new Date();
-        // user.ratings = []
 
         try {
             await user.save()
@@ -43,5 +44,29 @@ export class UserRepository extends Repository<User> {
 
     private static async hashPassword(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password, salt)
+    }
+
+    async createRandomUser(): Promise<void> {
+        const user = new User();
+        user.username = generateRandomString(10);
+        user.email = user.username;
+        user.salt = await bcrypt.genSalt();
+        user.password = await UserRepository.hashPassword(generateRandomString(20), user.salt);
+        user.createDate = new Date();
+
+        try {
+            await user.save()
+        } catch (e) {
+            if (e.code === '23505') {
+                throw new ConflictException("Username already exists")
+            } else {
+                throw new InternalServerErrorException(e)
+            }
+        }
+    }
+
+    async insertUsers(ratings): Promise<void> {
+        const uniqueUsers = getUniqueUsers(ratings)
+        uniqueUsers.forEach(() => this.createRandomUser())
     }
 }

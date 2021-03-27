@@ -5,7 +5,7 @@ import {Rating} from "./rating.entity";
 import {CreateRatingDto} from "./dto/create-rating.dto";
 
 @Controller('ratings')
-@UseGuards(AuthGuard())
+// @UseGuards(AuthGuard())
 export class RatingsController {
     constructor(private ratingsService: RatingsService) {}
 
@@ -17,5 +17,10 @@ export class RatingsController {
         @Req() req,
     ): Promise<Rating> {
         return this.ratingsService.createRating(createRatingDto, movieId, req.user)
+    }
+
+    @Post('/')
+    insertRatings(): Promise<void> {
+        return this.ratingsService.insertRatings()
     }
 }

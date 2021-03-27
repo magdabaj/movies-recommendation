@@ -6,6 +6,9 @@ import {User} from "./user.entity";
 import {SigninCredentialsDto} from "./dto/signin-credentials.dto";
 import {JwtService} from "@nestjs/jwt";
 import {JwtPayloadInterface} from "./jwt-payload.interface";
+import {CsvParser} from "nest-csv-parser";
+import * as fs from "fs";
+import {Rating} from "../ratings/rating.entity";
 
 @Injectable()
 export class UserService {
@@ -13,6 +16,7 @@ export class UserService {
         @InjectRepository(UserRepository)
         private userRepository: UserRepository,
         private jwtService: JwtService,
+        private csvParser: CsvParser,
     ) {}
 
     async signUp(userCredentialsDto: UserCredentialsDto): Promise<void> {
@@ -32,5 +36,11 @@ export class UserService {
 
         return { accessToken }
     }
+
+     async insertUsers(): Promise<void> {
+         const stream = fs.createReadStream('./src/ratings/data/ratings.csv')
+         const ratings = await this.csvParser.parse(stream, Rating, null,null,{ strict: true, separator: ',' })
+         await this.userRepository.insertUsers(ratings)
+     }
 
 }

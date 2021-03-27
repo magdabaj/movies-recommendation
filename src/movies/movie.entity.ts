@@ -1,10 +1,13 @@
-import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique} from "typeorm";
+import {BaseEntity, Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Unique} from "typeorm";
 import {Rating} from "../ratings/rating.entity";
 
 @Entity()
 export class Movie extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+    // @PrimaryGeneratedColumn()
+    // id: number;
+
+    @PrimaryColumn()
+    movieId: number;
 
     @Column()
     title: string;

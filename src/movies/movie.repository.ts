@@ -2,9 +2,7 @@ import {Movie} from "./movie.entity";
 import {EntityRepository, Repository} from "typeorm";
 import {CreateMovieDto} from "./dto/create-movie.dto";
 import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
-import {User} from "../user/user.entity";
-import * as fs from "fs";
-import csv from "csv-parser"
+import _ from "lodash";
 
 @EntityRepository(Movie)
 export class MovieRepository extends Repository<Movie> {
@@ -33,7 +31,20 @@ export class MovieRepository extends Repository<Movie> {
         return movies
     }
 
-    async createMovie(
+    // async createMovie(
+    //     createMovieDto: CreateMovieDto,
+    // ): Promise<Movie> {
+    //     const { title, genres } = createMovieDto
+    //
+    //     const movie = new Movie()
+    //     movie.title = title
+    //     movie.genres = genres
+    //     await movie.save()
+    //
+    //     return movie
+    // }
+
+    async insertMovie(
         title: string,
         genres: string,
         // createMovieDto: CreateMovieDto,
@@ -49,9 +60,47 @@ export class MovieRepository extends Repository<Movie> {
     }
 
     async insertMovies(movies): Promise<void> {
-        movies.list.forEach(movie =>
-            this.createMovie(movie.title, movie.genres)
-        )
+        // let moviesList = []
+        //
+        // movies.forEach(movie =>
+        //         moviesList.push({
+        //             id: movie.id,
+        //             title: movie.title,
+        //             genres: movie.genres,
+        //         })
+        // )
+        //
+        // await (async () => {
+        //     const desiredMovies = movies.length;
+        //     const blockSize = 9000;
+        //
+        //     console.log(desiredMovies/blockSize)
+        //
+        //     for (const i of _.range(desiredMovies / blockSize)) {
+        //         const movies = moviesList.slice(i*blockSize,i*blockSize+blockSize);
+        //         await this.save(movies);
+        //     }
+        // })();
+        let moviesList = []
+
+        movies.forEach(movie => {
+            moviesList.push({
+                movieId: movie.id,
+                title: movie.title,
+                genres: movie.genres,
+            })
+            console.log(movie.id)
+            if (moviesList.length === 9000) {
+                console.log('moviesList', moviesList)
+                this.save(moviesList)
+                moviesList = []
+                console.log("saved")
+                console.log(movie.id)
+            }
+        })
+        console.log('moviesList', moviesList)
+        await this.save(moviesList)
+        console.log("saved 2")
     }
 
 }

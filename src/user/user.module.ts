@@ -5,6 +5,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {UserRepository} from "./user.repository";
 import {JwtModule} from "@nestjs/jwt";
 import {PassportModule} from "@nestjs/passport";
+import {CsvModule} from "nest-csv-parser";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import {PassportModule} from "@nestjs/passport";
           }
       }),
       PassportModule.register({ defaultStrategy: 'jwt' }),
+      CsvModule,
   ],
   controllers: [UserController],
   providers: [UserService],

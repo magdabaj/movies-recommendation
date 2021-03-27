@@ -32,7 +32,7 @@ export class MoviesService {
     async createMovie(): Promise<void> {
         const stream = fs.createReadStream('./src/movies/data/movies.csv')
         const movies = await this.csvParser.parse(stream, Movie, null,null,{ strict: true, separator: ',' })
-        await this.movieRepository.insertMovies(movies)
+        await this.movieRepository.insertMovies(movies.list)
     }
 
     async deleteMovie(id: number): Promise<void> {
