@@ -4,6 +4,7 @@ import {User} from "../user/user.entity";
 
 @Entity()
 // @Unique(["user", "movieId"])
+// todo set userId and movieId as unique
 export class Rating extends BaseEntity
 {
     @PrimaryGeneratedColumn()
@@ -12,8 +13,8 @@ export class Rating extends BaseEntity
     @Column({type: "float", nullable: false})
     value: number;
 
-    @Column()
-    timestamp: string
+    @Column({type: 'bigint', nullable: true})
+    timestamp: number;
 
     @PrimaryColumn()
     userId: number;

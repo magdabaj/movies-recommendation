@@ -3,9 +3,5 @@ import {Timestamp} from "typeorm";
 
 export class CreateRatingDto {
     @IsNotEmpty()
-    @IsNumber()
     rating: number;
-
-    @IsNotEmpty()
-    timestamp: string;
 }

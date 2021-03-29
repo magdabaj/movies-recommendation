@@ -6,6 +6,7 @@ import {UserRepository} from "./user.repository";
 import {JwtModule} from "@nestjs/jwt";
 import {PassportModule} from "@nestjs/passport";
 import {CsvModule} from "nest-csv-parser";
+import {JwtStrategy} from "./jwt.strategy";
 
 @Module({
   imports: [
@@ -20,6 +21,14 @@ import {CsvModule} from "nest-csv-parser";
       CsvModule,
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [
+      UserService,
+      JwtStrategy,
+  ],
+  exports: [
+      UserService,
+      JwtStrategy,
+      PassportModule
+  ],
 })
 export class UserModule {}

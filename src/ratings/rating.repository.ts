@@ -1,8 +1,7 @@
-import {Entity, EntityRepository, getConnection, Repository, Unique} from "typeorm";
+import {EntityRepository, Repository} from "typeorm";
 import {Rating} from "./rating.entity";
 import {CreateRatingDto} from "./dto/create-rating.dto";
 import {User} from "../user/user.entity";
-import {options} from "tsconfig-paths/lib/options";
 
 @EntityRepository(Rating)
 export class RatingRepository extends Repository<Rating> {
@@ -11,11 +10,11 @@ export class RatingRepository extends Repository<Rating> {
         movieId: number,
         user: User,
     ): Promise<Rating> {
-        const { rating, timestamp } = createRatingDto
+        const { rating } = createRatingDto
 
         const ratingEntity = new Rating()
         ratingEntity.value = rating
-        ratingEntity.timestamp = timestamp
+        ratingEntity.timestamp = Date.now()
         ratingEntity.userId = user.id
         ratingEntity.user = user
         ratingEntity.movieId = movieId
@@ -26,7 +25,7 @@ export class RatingRepository extends Repository<Rating> {
         return ratingEntity
     }
 
-    async insertRating(userId: number, movieId: number, rating: number, timestamp: string): Promise<void> {
+    async insertRating(userId: number, movieId: number, rating: number, timestamp: number): Promise<void> {
         const ratingEntity = new Rating()
         ratingEntity.value = rating
         ratingEntity.userId = userId
@@ -44,25 +43,20 @@ export class RatingRepository extends Repository<Rating> {
                 value: rating.rating,
                 timestamp: rating.timestamp,
             })
-            console.log(rating.movieId)
             if (ratingsList.length === 9000) {
-                console.log('ratingsList', ratingsList)
                 try {
                     this.save(ratingsList)
                 } catch (e) {
                     console.log(e)
                 }
                 ratingsList = []
-                console.log("saved")
             }
         })
-        console.log(ratingsList)
         try {
             await this.save(ratingsList)
         } catch (e)
         {
             console.log(e)
         }
-        console.log("saved 2")
     }
 }

@@ -11,10 +11,10 @@ import {getUniqueUsers} from "../utils/getUniqueValues";
 export class UserRepository extends Repository<User> {
     async signUp(userCredentialsDto: UserCredentialsDto) {
 
-        const { username, email, password } = userCredentialsDto;
+        const { email, password } = userCredentialsDto;
 
         const user = new User();
-        user.username = username;
+        user.username = email;
         user.email = email;
         user.salt = await bcrypt.genSalt();
         user.password = await UserRepository.hashPassword(password, user.salt);

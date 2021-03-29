@@ -5,7 +5,7 @@ import {Rating} from "./rating.entity";
 import {CreateRatingDto} from "./dto/create-rating.dto";
 
 @Controller('ratings')
-// @UseGuards(AuthGuard())
+@UseGuards(AuthGuard())
 export class RatingsController {
     constructor(private ratingsService: RatingsService) {}
 
