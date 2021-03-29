@@ -2,6 +2,7 @@ import {EntityRepository, Repository} from "typeorm";
 import {Rating} from "./rating.entity";
 import {CreateRatingDto} from "./dto/create-rating.dto";
 import {User} from "../user/user.entity";
+import {NotFoundException} from "@nestjs/common";
 
 @EntityRepository(Rating)
 export class RatingRepository extends Repository<Rating> {
@@ -23,6 +24,30 @@ export class RatingRepository extends Repository<Rating> {
         delete ratingEntity.user
 
         return ratingEntity
+    }
+
+    async getMovieRatings(movieId: number): Promise<Rating[]> {
+        const query = this.createQueryBuilder('rating')
+
+        if (movieId){
+            query.andWhere('rating.movieId = :movieId', { movieId })
+        } else {
+            throw new NotFoundException(`Movie with id ${movieId} not found`)
+        }
+
+        const ratings = await query.getMany()
+
+        return ratings
+    }
+
+    async getUserRatings(user: User): Promise<Rating[]> {
+        const query = this.createQueryBuilder('rating')
+
+        query.andWhere('rating.userId = :userId', { userId: user.id })
+
+        const ratings = await query.getMany()
+
+        return ratings
     }
 
     async insertRating(userId: number, movieId: number, rating: number, timestamp: number): Promise<void> {
