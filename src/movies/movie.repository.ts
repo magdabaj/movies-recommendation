@@ -7,7 +7,11 @@ import _ from "lodash";
 @EntityRepository(Movie)
 export class MovieRepository extends Repository<Movie> {
     async getMovies(filterDto: GetMoviesFilterDto): Promise<Movie[]> {
-        const { search /*, date */} = filterDto;
+        let search = ''
+        if (filterDto) {
+            search = filterDto.search;
+        }
+
         const query = this.createQueryBuilder('movie')
 
         if (search) {

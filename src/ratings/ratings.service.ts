@@ -23,6 +23,10 @@ export class RatingsService {
         return this.ratingRepository.createRating(createRatingDto, movieId, user)
     }
 
+    async getRatings(): Promise<Rating[]> {
+        return this.ratingRepository.getRatings()
+    }
+
     async getMovieRatings(movieId: number): Promise<Rating[]> {
         return this.ratingRepository.getMovieRatings(movieId)
     }

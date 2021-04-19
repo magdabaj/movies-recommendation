@@ -6,6 +6,12 @@ import {NotFoundException} from "@nestjs/common";
 
 @EntityRepository(Rating)
 export class RatingRepository extends Repository<Rating> {
+    async getRatings(): Promise<Rating[]> {
+        const query = this.createQueryBuilder('rating')
+
+        return query.getMany()
+    }
+
     async createRating(
         createRatingDto: CreateRatingDto,
         movieId: number,

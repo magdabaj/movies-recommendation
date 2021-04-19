@@ -2,22 +2,46 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
+    Get, HttpService,
     Param,
     ParseIntPipe,
     Post,
-    Query,
+    Query, Req, UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
 import {MoviesService} from "./movies.service";
-import {CreateMovieDto} from "./dto/create-movie.dto";
 import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
 import {Movie} from "./movie.entity";
+import {RatingsService} from "../ratings/ratings.service";
+import {AuthGuard} from "@nestjs/passport";
+import {User} from "../user/user.entity";
 
 @Controller('movies')
 export class MoviesController {
-    constructor(private moviesService: MoviesService) {}
+    constructor(
+        private moviesService: MoviesService,
+        private ratingsService: RatingsService,
+        private httpService: HttpService,
+    ) {}
+
+    async getRecommendedMovies(user: User): Promise<Movie[]> {
+        const movies = await this.moviesService.getMovies()
+        //todo authorize
+        const ratings = await this.ratingsService.getRatings()
+
+        const response = await this.httpService.post(
+            `http://127.0.0.1:5000/recommend/${user.id}`,
+            {'movies': movies, 'ratings': ratings})
+            .toPromise()
+        return response.data
+    }
+
+    @Post('/recommend')
+    @UseGuards(AuthGuard())
+    getRecommendations(@Req() req) {
+        return this.getRecommendedMovies(req.user)
+    }
 
     @Get()
     getMovies(@Query(ValidationPipe) filterDto: GetMoviesFilterDto) {

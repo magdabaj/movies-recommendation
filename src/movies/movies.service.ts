@@ -16,7 +16,7 @@ export class MoviesService {
         private readonly csvParser: CsvParser
     ) {}
 
-    async getMovies(filterDto: GetMoviesFilterDto): Promise<Movie[]> {
+    async getMovies(filterDto?: GetMoviesFilterDto): Promise<Movie[]> {
         return this.movieRepository.getMovies(filterDto)
     }
     async getMovieById(id: number): Promise<Movie> {

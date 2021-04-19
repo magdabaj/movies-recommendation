@@ -13,6 +13,7 @@ import {CsvModule} from "nest-csv-parser";
     CsvModule,
   ],
   providers: [RatingsService],
-  controllers: [RatingsController]
+  controllers: [RatingsController],
+  exports: [RatingsService]
 })
 export class RatingsModule {}
