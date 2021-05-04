@@ -5,6 +5,7 @@ import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
 import _ from "lodash";
 import {PaginatedMoviesResultDto} from "./dto/paginated-movies-result.dto";
 import {InternalServerErrorException, Logger} from "@nestjs/common";
+import {createPaginationData} from "./helpers/createPaginationData";
 
 @EntityRepository(Movie)
 export class MovieRepository extends Repository<Movie> {
@@ -12,11 +13,7 @@ export class MovieRepository extends Repository<Movie> {
 
     async getMovies(filterDto: GetMoviesFilterDto): Promise<PaginatedMoviesResultDto> {
         const { search } = filterDto;
-
-        const page = filterDto.page ? Number(filterDto.page) : 1
-        const paginationLimit = filterDto.limit ? Number(filterDto.limit) : 10
-        const limit = paginationLimit > 10 ? 10 : paginationLimit
-        const skippedItems = (page - 1) * limit
+        const {page, limit,skippedItems} = createPaginationData(filterDto)
 
         const totalCount = await this.count()
 
