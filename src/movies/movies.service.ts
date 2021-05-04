@@ -7,6 +7,7 @@ import {Movie} from "./movie.entity";
 import {User} from "../user/user.entity";
 import {CsvParser, ParsedData} from "nest-csv-parser";
 import * as fs from "fs";
+import {PaginatedMoviesResultDto} from "./dto/paginated-movies-result.dto";
 
 @Injectable()
 export class MoviesService {
@@ -16,7 +17,7 @@ export class MoviesService {
         private readonly csvParser: CsvParser
     ) {}
 
-    async getMovies(filterDto?: GetMoviesFilterDto): Promise<Movie[]> {
+    async getMovies(filterDto?: GetMoviesFilterDto): Promise<PaginatedMoviesResultDto> {
         return this.movieRepository.getMovies(filterDto)
     }
     async getMovieById(id: number): Promise<Movie> {

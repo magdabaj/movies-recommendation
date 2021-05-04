@@ -16,6 +16,7 @@ import {Movie} from "./movie.entity";
 import {RatingsService} from "../ratings/ratings.service";
 import {AuthGuard} from "@nestjs/passport";
 import {User} from "../user/user.entity";
+import {PaginatedMoviesResultDto} from "./dto/paginated-movies-result.dto";
 
 @Controller('movies')
 export class MoviesController {
@@ -27,7 +28,7 @@ export class MoviesController {
 
     async getRecommendedMovies(user: User): Promise<Movie[]> {
         const movies = await this.moviesService.getMovies()
-        //todo authorize
+        //todo maybe authorize?
         const ratings = await this.ratingsService.getRatings()
 
         const response = await this.httpService.post(
@@ -44,7 +45,7 @@ export class MoviesController {
     }
 
     @Get()
-    getMovies(@Query(ValidationPipe) filterDto: GetMoviesFilterDto) {
+    getMovies(@Query(ValidationPipe) filterDto: GetMoviesFilterDto): Promise<PaginatedMoviesResultDto> {
         return this.moviesService.getMovies(filterDto)
     }
 

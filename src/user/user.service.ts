@@ -23,7 +23,10 @@ export class UserService {
         return this.userRepository.signUp(userCredentialsDto)
     }
 
-    async signIn(signinCredentialsDto: SigninCredentialsDto): Promise<{ accessToken: string }> {
+    async signIn(signinCredentialsDto: SigninCredentialsDto): Promise<{
+        accessToken: string,
+        user: JwtPayloadInterface
+    }> {
         const email = await this.userRepository.validateUserPassword(signinCredentialsDto)
 
         if (!email) {
@@ -34,7 +37,7 @@ export class UserService {
 
         const accessToken = await this.jwtService.sign(payload)
 
-        return { accessToken }
+        return { accessToken, user: payload }
     }
 
      async insertUsers(): Promise<void> {

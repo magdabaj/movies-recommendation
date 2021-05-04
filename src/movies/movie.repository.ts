@@ -3,16 +3,26 @@ import {EntityRepository, Repository} from "typeorm";
 import {CreateMovieDto} from "./dto/create-movie.dto";
 import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
 import _ from "lodash";
+import {PaginatedMoviesResultDto} from "./dto/paginated-movies-result.dto";
+import {InternalServerErrorException, Logger} from "@nestjs/common";
 
 @EntityRepository(Movie)
 export class MovieRepository extends Repository<Movie> {
-    async getMovies(filterDto: GetMoviesFilterDto): Promise<Movie[]> {
-        let search = ''
-        if (filterDto) {
-            search = filterDto.search;
-        }
+    private logger = new Logger("MovieRepository");
+
+    async getMovies(filterDto: GetMoviesFilterDto): Promise<PaginatedMoviesResultDto> {
+        const { search } = filterDto;
+
+        const page = filterDto.page ? Number(filterDto.page) : 1
+        const paginationLimit = filterDto.limit ? Number(filterDto.limit) : 10
+        const limit = paginationLimit > 10 ? 10 : paginationLimit
+        const skippedItems = (page - 1) * limit
+
+        const totalCount = await this.count()
 
         const query = this.createQueryBuilder('movie')
+
+        query.offset(skippedItems).limit(limit)
 
         if (search) {
             query.andWhere(
@@ -30,9 +40,20 @@ export class MovieRepository extends Repository<Movie> {
         //         )
         // }
 
-        const movies = await query.getMany()
+        try {
+            const movies = await query.getMany()
+            return {
+                data: movies,
+                totalCount,
+                limit,
+                page,
+            }
+        } catch (e) {
+            this.logger.error(`Failed to get movies. Filters DTO: ${JSON.stringify(filterDto)}`, e.stack)
+            throw new InternalServerErrorException()
+        }
 
-        return movies
+
     }
 
     // async createMovie(
