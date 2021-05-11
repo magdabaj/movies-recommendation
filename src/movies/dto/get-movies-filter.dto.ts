@@ -2,7 +2,7 @@ import {IsNotEmpty, IsOptional} from "class-validator";
 
 export class GetMoviesFilterDto {
     @IsOptional()
-    @IsNotEmpty()
+    // @IsNotEmpty()
     search: string;
 
     // todo remove isOptional

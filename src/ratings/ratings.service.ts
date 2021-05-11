@@ -35,9 +35,21 @@ export class RatingsService {
         return this.ratingRepository.getUserRatings(user)
     }
 
+    async getMovieRatingForUser(movieId: number, user: User): Promise<Rating> {
+        return this.ratingRepository.getMovieRatingForUser(movieId, user)
+    }
+
     async insertRatings(): Promise<void> {
         const stream = fs.createReadStream('./src/ratings/data/ratings.csv')
         const ratings = await this.csvParser.parse(stream, Rating, null,null,{ strict: true, separator: ',' })
         await this.ratingRepository.insertRatings(ratings.list)
+    }
+
+    async changeRating(
+        createRatingDto: CreateRatingDto,
+        movieId: number,
+        user: User
+    ): Promise<Rating> {
+        return this.ratingRepository.changeRating(createRatingDto, movieId, user)
     }
 }

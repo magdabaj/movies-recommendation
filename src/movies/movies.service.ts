@@ -8,6 +8,7 @@ import {User} from "../user/user.entity";
 import {CsvParser, ParsedData} from "nest-csv-parser";
 import * as fs from "fs";
 import {PaginatedMoviesResultDto} from "./dto/paginated-movies-result.dto";
+import {RatingRepository} from "../ratings/rating.repository";
 
 @Injectable()
 export class MoviesService {

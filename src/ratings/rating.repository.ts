@@ -12,6 +12,7 @@ export class RatingRepository extends Repository<Rating> {
         return query.getMany()
     }
 
+
     async createRating(
         createRatingDto: CreateRatingDto,
         movieId: number,
@@ -56,6 +57,17 @@ export class RatingRepository extends Repository<Rating> {
         return ratings
     }
 
+    async getMovieRatingForUser(movieId: number, user: User): Promise<Rating> {
+        const query = this.createQueryBuilder('rating')
+
+        query.andWhere('rating.userId = :userId ', { userId: user.id })
+            .andWhere('rating.movieId = :movieId',{movieId: movieId})
+
+        const rating = await query.getOne()
+        if (rating) return rating
+        else throw new NotFoundException(`You have not yet rated this movie, id: ${movieId}`)
+    }
+
     async insertRating(userId: number, movieId: number, rating: number, timestamp: number): Promise<void> {
         const ratingEntity = new Rating()
         ratingEntity.value = rating
@@ -89,5 +101,19 @@ export class RatingRepository extends Repository<Rating> {
         {
             console.log(e)
         }
+    }
+
+    async changeRating(
+        createRatingDto: CreateRatingDto,
+        movieId: number,
+        user: User
+    ): Promise<Rating> {
+        const updateRating: Rating = await this.findOne({movieId, userId: user.id})
+
+        if (updateRating) {
+            updateRating.value = createRatingDto.rating
+            return updateRating;
+        }
+        else throw new NotFoundException(`Rating with movie id ${movieId} not found`)
     }
 }

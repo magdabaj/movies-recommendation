@@ -6,13 +6,15 @@ import _ from "lodash";
 import {PaginatedMoviesResultDto} from "./dto/paginated-movies-result.dto";
 import {InternalServerErrorException, Logger} from "@nestjs/common";
 import {createPaginationData} from "./helpers/createPaginationData";
+import {Rating} from "../ratings/rating.entity";
 
 @EntityRepository(Movie)
 export class MovieRepository extends Repository<Movie> {
     private logger = new Logger("MovieRepository");
 
     async getMovies(filterDto: GetMoviesFilterDto): Promise<PaginatedMoviesResultDto> {
-        const { search } = filterDto;
+        const searchDto = filterDto.search;
+        let search = searchDto ? searchDto : ''
         const {page, limit,skippedItems} = createPaginationData(filterDto)
 
         const totalCount = await this.count()
@@ -53,6 +55,21 @@ export class MovieRepository extends Repository<Movie> {
 
     }
 
+
+    // async getRatingsMeanForMovies(): Promise<number[]> {
+    //     const query = this.createQueryBuilder('movie')
+    //
+    //     query.loadRelationCountAndMap(
+    //         'movie.ratingsMean',
+    //         'movie.ratings',
+    //         'rating',
+    //             qb =>
+    //                 qb.where('rating.movieId = movie.movieId')
+    //     )
+    //
+    //     query.getMany()
+    //
+    // }
     // async createMovie(
     //     createMovieDto: CreateMovieDto,
     // ): Promise<Movie> {

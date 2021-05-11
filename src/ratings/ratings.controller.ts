@@ -4,7 +4,7 @@ import {
     Get,
     Param,
     ParseIntPipe,
-    Post,
+    Post, Put,
     Req,
     UseGuards,
     UsePipes,
@@ -30,6 +30,17 @@ export class RatingsController {
         return this.ratingsService.createRating(createRatingDto, movieId, req.user)
     }
 
+    @UseGuards(AuthGuard())
+    @Put('/user/:movieId')
+    @UsePipes(ValidationPipe)
+    changeRating(
+        @Param('movieId', ParseIntPipe) movieId: number,
+        @Body() createRatingDto: CreateRatingDto,
+        @Req() req,
+    ): Promise<Rating> {
+        return this.ratingsService.changeRating(createRatingDto, movieId, req.user)
+    }
+
     @Get('/:movieId')
     getMovieRatings(
         @Param('movieId', ParseIntPipe) movieId: number,
@@ -43,6 +54,15 @@ export class RatingsController {
         @Req() req,
     ): Promise<Rating[]> {
         return this.ratingsService.getUserRatings(req.user)
+    }
+
+    @UseGuards(AuthGuard())
+    @Get('/user/:movieId')
+    getMovieRatingForUser(
+        @Req() req,
+        @Param('movieId', ParseIntPipe) movieId: number,
+    ): Promise<Rating> {
+        return this.ratingsService.getMovieRatingForUser(movieId, req.user)
     }
 
     @Post('/')
