@@ -6,6 +6,7 @@ import {User} from "../user/user.entity";
 import {Rating} from "./rating.entity";
 import {CsvParser} from "nest-csv-parser";
 import * as fs from "fs";
+import {MoviesService} from "../movies/movies.service";
 
 @Injectable()
 export class RatingsService {
@@ -13,6 +14,7 @@ export class RatingsService {
         @InjectRepository(RatingRepository)
         private ratingRepository: RatingRepository,
         private csvParser: CsvParser,
+        private moviesService: MoviesService,
     ) {}
 
     async createRating(
@@ -20,7 +22,8 @@ export class RatingsService {
         movieId: number,
         user: User,
     ): Promise<Rating> {
-        return this.ratingRepository.createRating(createRatingDto, movieId, user)
+        const movie = await this.moviesService.getMovieById(movieId)
+        return this.ratingRepository.createRating(createRatingDto, movieId, user, movie)
     }
 
     async getRatings(): Promise<Rating[]> {

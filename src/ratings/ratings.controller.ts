@@ -31,7 +31,7 @@ export class RatingsController {
     }
 
     @UseGuards(AuthGuard())
-    @Put('/user/:movieId')
+    @Put('/:movieId')
     @UsePipes(ValidationPipe)
     changeRating(
         @Param('movieId', ParseIntPipe) movieId: number,

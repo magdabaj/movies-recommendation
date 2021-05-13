@@ -16,6 +16,7 @@ import {UserModule} from "../user/user.module";
     UserModule,
   ],
   controllers: [MoviesController],
-  providers: [MoviesService]
+  providers: [MoviesService],
+  exports: [MoviesService]
 })
 export class MoviesModule {}

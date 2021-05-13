@@ -3,6 +3,7 @@ import {Rating} from "./rating.entity";
 import {CreateRatingDto} from "./dto/create-rating.dto";
 import {User} from "../user/user.entity";
 import {NotFoundException} from "@nestjs/common";
+import {Movie} from "../movies/movie.entity";
 
 @EntityRepository(Rating)
 export class RatingRepository extends Repository<Rating> {
@@ -17,8 +18,14 @@ export class RatingRepository extends Repository<Rating> {
         createRatingDto: CreateRatingDto,
         movieId: number,
         user: User,
+        movie: Movie,
     ): Promise<Rating> {
         const { rating } = createRatingDto
+
+        const existingRating = await this.find({movieId, userId: user.id})
+
+        if (existingRating.length > 0)
+            throw  new Error(`You cannot add more than one rating to a movie`)
 
         const ratingEntity = new Rating()
         ratingEntity.value = rating
@@ -26,6 +33,7 @@ export class RatingRepository extends Repository<Rating> {
         ratingEntity.userId = user.id
         ratingEntity.user = user
         ratingEntity.movieId = movieId
+        ratingEntity.movie = movie
         await ratingEntity.save()
 
         delete ratingEntity.user
@@ -48,13 +56,18 @@ export class RatingRepository extends Repository<Rating> {
     }
 
     async getUserRatings(user: User): Promise<Rating[]> {
-        const query = this.createQueryBuilder('rating')
+        // const query = this.createQueryBuilder('rating')
+        //
+        // query.andWhere('rating.userId = :userId', { userId: user.id })
+        //
+        // const ratings = await query.getMany()
 
-        query.andWhere('rating.userId = :userId', { userId: user.id })
+        // return ratings
 
-        const ratings = await query.getMany()
-
-        return ratings
+        return this.find({
+            relations: ['movie'],
+            where: { userId: user.id },
+        });
     }
 
     async getMovieRatingForUser(movieId: number, user: User): Promise<Rating> {
@@ -64,6 +77,7 @@ export class RatingRepository extends Repository<Rating> {
             .andWhere('rating.movieId = :movieId',{movieId: movieId})
 
         const rating = await query.getOne()
+        // console.log('rating', rating)
         if (rating) return rating
         else throw new NotFoundException(`You have not yet rated this movie, id: ${movieId}`)
     }
@@ -112,6 +126,8 @@ export class RatingRepository extends Repository<Rating> {
 
         if (updateRating) {
             updateRating.value = createRatingDto.rating
+            // console.log(updateRating, 'updated rating')
+            await updateRating.save()
             return updateRating;
         }
         else throw new NotFoundException(`Rating with movie id ${movieId} not found`)

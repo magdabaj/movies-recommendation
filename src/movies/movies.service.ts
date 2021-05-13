@@ -15,7 +15,7 @@ export class MoviesService {
     constructor(
         @InjectRepository(MovieRepository)
         private movieRepository: MovieRepository,
-        private readonly csvParser: CsvParser
+        private readonly csvParser: CsvParser,
     ) {}
 
     async getMovies(filterDto?: GetMoviesFilterDto): Promise<PaginatedMoviesResultDto> {
