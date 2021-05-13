@@ -12,7 +12,9 @@ import {UserModule} from "../user/user.module";
     TypeOrmModule.forFeature([MovieRepository]),
     CsvModule,
     RatingsModule,
-    HttpModule,
+    HttpModule.register({
+      maxBodyLength: Infinity
+    }),
     UserModule,
   ],
   controllers: [MoviesController],

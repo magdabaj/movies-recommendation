@@ -1,12 +1,9 @@
 import {Movie} from "./movie.entity";
 import {EntityRepository, Repository} from "typeorm";
-import {CreateMovieDto} from "./dto/create-movie.dto";
 import {GetMoviesFilterDto} from "./dto/get-movies-filter.dto";
-import _ from "lodash";
 import {PaginatedMoviesResultDto} from "./dto/paginated-movies-result.dto";
 import {InternalServerErrorException, Logger} from "@nestjs/common";
 import {createPaginationData} from "./helpers/createPaginationData";
-import {Rating} from "../ratings/rating.entity";
 
 @EntityRepository(Movie)
 export class MovieRepository extends Repository<Movie> {
@@ -142,4 +139,8 @@ export class MovieRepository extends Repository<Movie> {
         console.log("saved 2")
     }
 
+    async getAllMovies(): Promise<Movie[]> {
+        const query = this.createQueryBuilder('movie')
+        return await query.getMany();
+    }
 }

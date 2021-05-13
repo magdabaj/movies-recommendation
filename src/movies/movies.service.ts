@@ -75,4 +75,7 @@ export class MoviesService {
     //     return movies
     // }
     //
+    async getAllMovies(): Promise<Movie[]> {
+        return this.movieRepository.getAllMovies()
+    }
 }

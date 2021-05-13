@@ -27,14 +27,20 @@ export class MoviesController {
     ) {}
 
     async getRecommendedMovies(user: User): Promise<Movie[]> {
-        const movies = await this.moviesService.getMovies()
+        const movies = await this.moviesService.getAllMovies()
         //todo maybe authorize?
         const ratings = await this.ratingsService.getRatings()
 
+        console.log(ratings, 'response')
         const response = await this.httpService.post(
             `http://127.0.0.1:5000/recommend/${user.id}`,
-            {'movies': movies, 'ratings': ratings})
+            {
+                'movies': movies,
+                'ratings': ratings,
+            },
+            )
             .toPromise()
+        console.log(response, 'response')
         return response.data
     }
 
@@ -42,6 +48,11 @@ export class MoviesController {
     @UseGuards(AuthGuard())
     getRecommendations(@Req() req) {
         return this.getRecommendedMovies(req.user)
+    }
+
+    @Get('/all')
+    getAllMovies(): Promise<Movie[]> {
+        return this.moviesService.getAllMovies()
     }
 
     @Get()

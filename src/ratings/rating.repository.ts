@@ -33,6 +33,7 @@ export class RatingRepository extends Repository<Rating> {
         ratingEntity.userId = user.id
         ratingEntity.user = user
         ratingEntity.movieId = movieId
+
         ratingEntity.movie = movie
         await ratingEntity.save()
 
